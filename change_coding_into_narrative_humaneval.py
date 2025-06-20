@@ -2,27 +2,7 @@ import os
 import time
 from openai import OpenAI
 import json
-
-# Instruction 템플릿
-INSTRUCTION = """Please transform the coding problem into a narrative story format using the following guidelines.
-
-### Guidelines for Narrative Conversion:
-
-- You may use alphabetical symbols for quantity-related variables (such as N, M, K), and you may also use mathematical expressions (such as 10^5) when describing their constraints. However, all other variables must **not** be represented using symbols (such as ≤, ≥, =, or variable names); instead, describe them **indirectly through natural language only.**
-- Build the story in **any genre or setting**—such as fantasy, sci-fi, historical, modern, dystopian, mystery, or slice-of-life—and express each mathematical rule through **world-specific logic** such as social norms, systems, behaviors, or relationships.
-- You must include and **accurately reflect all original constraints and goals**, converting them into **clear symbolic analogies** within the narrative.
-- Clearly convey that the goal is not just to meet the conditions, but to do so **as fully or efficiently as possible** within the world’s logic.
-- Use **rich language** to build the world, but ensure that each rule remains **logically clear and inferable** to the reader. Don't get too caught up in narrative descriptions—focus on clearly explaining the problem as well.
-- You **must present the input and output format** as part of the story's narrative.
-- Conclude the story by reframing all original sample inputs, outputs, and their explanations in the context of the narrative world.
-
-The story should be structured into **six paragraphs at most**, and follow this flow:
-
-**Background → Rules and Problem Setting → Task Explanation → Examples and Closing**
-
-The coding problem is as follows:
-
-"""
+from instruction_template import INSTRUCTION_HUMANEVAL
 
 
 def rewrite_question_content(client, prompt: str) -> str:
@@ -38,7 +18,7 @@ def rewrite_question_content(client, prompt: str) -> str:
                 "content": prompt
             }
         ],
-        temperature=0.8,
+        temperature=1.0,
     )
     return response.output_text.strip()
 
@@ -46,10 +26,10 @@ def rewrite_question_content(client, prompt: str) -> str:
 if __name__ == "__main__":
     
     # 입력/출력 파일 경로
-    input_jsonl_path = "/home/work/users/PIL_ghj/LLM/datasets/live-code-bench/test6.jsonl"
-    output_path = "/home/work/users/PIL_ghj/LLM/datasets/ChatGPT"
+    input_jsonl_path = "/home/work/users/PIL_ghj/LLM/datasets/human-eval/data/HumanEval_in_lcb_format.jsonl"
+    output_path = "/home/work/users/PIL_ghj/LLM/datasets/ChatGPT/HumanEval"
     os.makedirs(output_path, exist_ok=True)
-    output_jsonl_path = os.path.join(output_path, "test6_narrative_by_gpt.jsonl")
+    output_jsonl_path = os.path.join(output_path, "humaneval_narrative_by_gpt.jsonl")
     
     client = OpenAI()
     
@@ -78,7 +58,7 @@ if __name__ == "__main__":
                     print(f"[Logging] Skipping already processed question_id: {qid}")
                     continue
                 
-                input_prompt = INSTRUCTION + problem["question_content"]
+                input_prompt = INSTRUCTION_HUMANEVAL + problem["question_content"]
                 
                 new_content = rewrite_question_content(client, input_prompt)
                 print("\n------------------------- GPT Response -------------------------\n")

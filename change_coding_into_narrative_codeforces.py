@@ -2,13 +2,13 @@ import os
 from openai import OpenAI
 import json
 import time
-from instruction_template import INSTRUCTION_LCB, INSTRUCTION_HUMANEVAL, INSTRUCTION_CODEFORCES, genres
+from instruction_template import INSTRUCTION_LCB, INSTRUCTION_HUMANEVAL, INSTRUCTION_CODEFORCES, SHORT_INSTRUCTION_CODEFORCES, genres
 
 
 instruction_dict = {
     "HumanEval": INSTRUCTION_HUMANEVAL,
     "LiveCodeBench": INSTRUCTION_LCB,
-    "CodeForces": INSTRUCTION_CODEFORCES,
+    "CodeForces": SHORT_INSTRUCTION_CODEFORCES,
 }
 
 # 기존 출력 파일에서 이미 처리한 ID 수집
@@ -48,9 +48,8 @@ def call_gpt(client, prompt):
 # 메인 실행
 if __name__ == "__main__":
     
-    
     # 입력 파일 경로
-    input_jsonl_path = "/home/work/users/PIL_ghj/LLM/datasets/codeforces/codeforces_in_lcb_format.jsonl"
+    input_jsonl_path = "/home/work/users/PIL_ghj/LLM/datasets/codeforces/codeforces_in_lcb_format.jsonl" # codeforces_challenging_in_lcb_format
     # "/home/work/users/PIL_ghj/LLM/datasets/human-eval/data/HumanEval_in_lcb_format.jsonl"
     # "/home/work/users/PIL_ghj/LLM/datasets/live-code-bench/test6.jsonl"
 
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     output_path_name = "CodeForces"  # HumanEval LiveCodeBench CodeForces
 
     # 파일명
-    file_name = "codeforces_narrative_by_gpt.jsonl" # humaneval_narrative_by_gpt_test.jsonl test6_narrative_by_gpt_test.jsonl
+    file_name = "codeforces_narrative_by_gpt_short.jsonl" # humaneval_narrative_by_gpt_test.jsonl test6_narrative_by_gpt_test.jsonl  codeforces_challenging_narrative_by_gpt
 
 
     output_path = f"/home/work/users/PIL_ghj/LLM/datasets/ChatGPT/{output_path_name}"
